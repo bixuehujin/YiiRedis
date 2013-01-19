@@ -75,13 +75,18 @@ class ARedisList extends ARedisIterableEntity {
 
 	/**
 	 * Removes and returns the first item from the list
+	 * @param boolean $block 
 	 * @return mixed the item that was removed from the list
 	 */
-	public function shift() {
+	public function shift($block = false) {
 		if ($this->name === null) {
 			throw new CException(get_class($this)." requires a name!");
 		}
-		$item = $this->getConnection()->getClient()->lpop($this->name);
+		if ($block) {
+			$item = $this->getConnection()->getClient()->blpop($this->name);
+		}else {
+			$item = $this->getConnection()->getClient()->lpop($this->name);
+		}
 		$this->_data = null;
 		$this->_count = null;
 		return $item;
@@ -89,13 +94,19 @@ class ARedisList extends ARedisIterableEntity {
 
 	/**
 	 * Removes and returns the last item from the list
+	 * @param boolean $block
 	 * @return mixed the item that was removed from the list
 	 */
-	public function pop() {
+	public function pop($block = false) {
 		if ($this->name === null) {
 			throw new CException(get_class($this)." requires a name!");
 		}
-		$item = $this->getConnection()->getClient()->rpop($this->name);
+		if ($block) {
+			$item = $this->getConnection()->getClient()->brpop($this->name);
+		}else {
+			$item = $this->getConnection()->getClient()->rpop($this->name);
+		}
+		
 		$this->_data = null;
 		$this->_count = null;
 		return $item;
