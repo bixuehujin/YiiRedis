@@ -53,6 +53,16 @@ class ARedisConnection extends CApplicationComponent {
 	}
 
 	/**
+	 * Try to reconnect to redis server.
+	 * @return boolean
+	 */
+	public function reconnect()
+	{
+		$this->_client = new Redis();
+		return $this->_client->connect($this->hostname, $this->port);
+	}
+	
+	/**
 	 * Returns a property value based on its name.
 	 * Do not call this method. This is a PHP magic method that we override
 	 * to allow using the following syntax to read a property
